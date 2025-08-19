@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Basic Example - Lambda + DynamoDB + GraphQL (Node.js 20 + TypeScript)
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs20.x
+    MemorySize: 128
+
+Resources:
+  ItemsTableStore:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ItemsStore
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  AddItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/addItem.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref ItemsTableStore
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ItemsTableStore
+
+  GetItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/getItem.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref ItemsTableStore
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ItemsTableStore
+
+  ListItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/listItems.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref ItemsTableStore
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ItemsTableStore
+
+Outputs:
+  DynamoDBTableName:
+    Value: !Ref ItemsTableStore
+    Description: DynamoDB Table

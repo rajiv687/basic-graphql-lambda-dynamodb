@@ -1,0 +1,9 @@
+{
+  "Query": {
+    "getItem": "GetItemFunction",
+    "listItems": "ListItemsFunction"
+  },
+  "Mutation": {
+    "addItem": "AddItemFunction"
+  }
+}
