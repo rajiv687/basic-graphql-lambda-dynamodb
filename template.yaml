@@ -1,60 +1,31 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: '2025-08-20'
 Transform: AWS::Serverless-2016-10-31
-Description: Basic Example - Lambda + DynamoDB + GraphQL (Node.js 20, TypeScript compiled to JS)
+Description: Lambda calling GraphQL API (Node.js 20)
 
 Globals:
   Function:
     Timeout: 10
-    Runtime: nodejs20.x
     MemorySize: 128
+    Runtime: nodejs20.x
 
 Resources:
-  ItemsTableStore1:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: ItemsStore1
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
-      BillingMode: PAY_PER_REQUEST
-
-  AddItemFunction:
+  # Lambda that calls the GraphQL API
+  GraphQLCallerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: dist/handlers/addItem.handler
+      Handler: src/graphqlCaller.handler
+      Runtime: nodejs20.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref ItemsTableStore1
+          GRAPHQL_API_URL: "https://u6ptuvsgprc75bwvvsrewqikty.appsync-api.us-west-1.amazonaws.com/graphql"  #GraphQL endpoint
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ItemsTableStore1
-
-  GetItemFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/handlers/getItem.handler
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref ItemsTableStore1
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref ItemsTableStore1
-
-  ListItemsFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/handlers/listItems.handler
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref ItemsTableStore1
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref ItemsTableStore1
+        - Statement:
+            Effect: Allow
+            Action:
+              - execute-api:Invoke
+            Resource: "*"
 
 Outputs:
-  DynamoDBTableName:
-    Value: !Ref ItemsTableStore1
-    Description: DynamoDB Table
+  LambdaName:
+    Value: !Ref GraphQLCallerFunction
+    Description: Lambda that calls GraphQL API
