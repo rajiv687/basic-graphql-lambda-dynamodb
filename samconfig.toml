@@ -1,8 +1,8 @@
 version = 0.1
 [default.deploy.parameters]
-stack_name = "basic-lambda-graphql-dynamodb-s314"
+stack_name = "basic-lambda-graphql-dynamodb-s315"
 resolve_s3 = true
-s3_prefix = "basic-lambda-graphql-dynamodb-s314"
+s3_prefix = "basic-lambda-graphql-dynamodb-s315"
 region = "us-west-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"

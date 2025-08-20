@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Basic Example - Lambda + DynamoDB + GraphQL (Node.js 20 + TypeScript)
+Description: Basic Example - Lambda + DynamoDB + GraphQL (Node.js 20, TypeScript compiled to JS)
 
 Globals:
   Function:
@@ -9,10 +9,10 @@ Globals:
     MemorySize: 128
 
 Resources:
-  ItemsTableStore:
+  ItemsTableStore1:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ItemsStore
+      TableName: ItemsStore1
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -27,10 +27,10 @@ Resources:
       Handler: dist/handlers/addItem.handler
       Environment:
         Variables:
-          TABLE_NAME: !Ref ItemsTableStore
+          TABLE_NAME: !Ref ItemsTableStore1
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref ItemsTableStore
+            TableName: !Ref ItemsTableStore1
 
   GetItemFunction:
     Type: AWS::Serverless::Function
@@ -38,10 +38,10 @@ Resources:
       Handler: dist/handlers/getItem.handler
       Environment:
         Variables:
-          TABLE_NAME: !Ref ItemsTableStore
+          TABLE_NAME: !Ref ItemsTableStore1
       Policies:
         - DynamoDBReadPolicy:
-            TableName: !Ref ItemsTableStore
+            TableName: !Ref ItemsTableStore1
 
   ListItemsFunction:
     Type: AWS::Serverless::Function
@@ -49,12 +49,12 @@ Resources:
       Handler: dist/handlers/listItems.handler
       Environment:
         Variables:
-          TABLE_NAME: !Ref ItemsTableStore
+          TABLE_NAME: !Ref ItemsTableStore1
       Policies:
         - DynamoDBReadPolicy:
-            TableName: !Ref ItemsTableStore
+            TableName: !Ref ItemsTableStore1
 
 Outputs:
   DynamoDBTableName:
-    Value: !Ref ItemsTableStore
+    Value: !Ref ItemsTableStore1
     Description: DynamoDB Table
