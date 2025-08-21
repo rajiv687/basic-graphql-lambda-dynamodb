@@ -1,5 +1,5 @@
-AWSTemplateFormatVersion: '2025-08-19'
-Transform: AWS::Serverless-2025-08-19
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 Description: Basic Example - Lambda + DynamoDB + GraphQL (Node.js 20, TypeScript compiled to JS)
 
 Globals:
